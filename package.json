@@ -7,11 +7,12 @@
     "dev:next": "next dev",
     "dev:server": "tsx watch server/index.ts",
     "build": "next build",
+    "build:server": "echo 'Server uses tsx, no build needed'",
     "start": "concurrently \"npm run start:next\" \"npm run start:server\"",
     "start:next": "next start",
-    "start:server": "node dist/server/index.js",
-    "build:server": "tsc -p tsconfig.server.json",
-    "lint": "next lint"
+    "start:server": "tsx server/index.ts",
+    "lint": "next lint",
+    "verify-ci": "bash scripts/verify-ci.sh"
   },
   "dependencies": {
     "react": "^18.3.1",

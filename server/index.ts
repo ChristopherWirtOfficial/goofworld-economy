@@ -11,12 +11,20 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.NODE_ENV === 'production' ? false : ['http://localhost:3000'],
+    origin: process.env.NODE_ENV === 'production' 
+      ? [/\.vercel\.app$/, /\.railway\.app$/] 
+      : ['http://localhost:3000'],
     methods: ['GET', 'POST'],
+    credentials: true,
   },
 });
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? [/\.vercel\.app$/, /\.railway\.app$/] 
+    : ['http://localhost:3000'],
+  credentials: true,
+}));
 app.use(express.json());
 
 // Game state

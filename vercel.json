@@ -1,0 +1,9 @@
+{
+  "buildCommand": "yarn build",
+  "framework": "nextjs",
+  "installCommand": "yarn install",
+  "devCommand": "yarn dev:next",
+  "env": {
+    "NEXT_PUBLIC_SOCKET_URL": "@socket_url"
+  }
+}
