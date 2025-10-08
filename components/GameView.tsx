@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai';
 import { Box, Heading, Text, VStack, SimpleGrid, Spinner, Center } from '@chakra-ui/react';
 import { gameStateAtom } from '@/store/atoms';
 import { TownVisualization } from './TownVisualization';
+import { RevealedOrdersPanel } from './RevealedOrdersPanel';
 
 export default function GameView() {
   const gameState = useAtomValue(gameStateAtom);
@@ -26,7 +27,8 @@ export default function GameView() {
   const revealedOrders = Object.values(gameState.orders).filter(o => o.isRevealed).length;
 
   return (
-    <Box maxW="1400px" mx="auto" p={8}>
+    <Box maxW="1400px" mx="auto" p={8} position="relative">
+      <RevealedOrdersPanel />
       <VStack align="stretch" gap={8}>
         <Box 
           bg="#1a1d29" 

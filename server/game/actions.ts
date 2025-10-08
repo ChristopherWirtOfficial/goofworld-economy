@@ -52,51 +52,74 @@ function moveOrder(gameState: GameState, action: PlayerAction): GameState {
 }
 
 function revealOrders(gameState: GameState, action: PlayerAction): GameState {
-  if (!action.revealEntityId) {
-    throw new Error('Missing revealEntityId for reveal_orders action');
+  if (!action.layer) {
+    throw new Error('Missing layer for reveal_orders action');
   }
 
-  const entity = gameState.entities[action.revealEntityId];
-  if (!entity) {
-    throw new Error('Entity not found');
+  let ordersToReveal: string[] = [];
+  let revealPercentage: number;
+  let durationMs: number;
+
+  if (action.layer === 'warehouse') {
+    // Warehouse reveals work at layer level (all warehouses)
+    const allEntities = Object.values(gameState.entities);
+    const warehouseEntities = allEntities.filter(e => e.type === 'warehouse');
+    
+    warehouseEntities.forEach(entity => {
+      ordersToReveal.push(...entity.incomingOrderIds, ...entity.outgoingOrderIds);
+    });
+    
+    revealPercentage = 0.7; // 70%
+    durationMs = 30 * 60 * 1000; // 30 minutes
+  } else if (action.layer === 'store' || action.layer === 'household') {
+    // Store and household reveals work at neighborhood level
+    if (!action.neighborhoodId) {
+      throw new Error('Missing neighborhoodId for store/household reveal_orders action');
+    }
+
+    const neighborhood = gameState.neighborhoods[action.neighborhoodId];
+    if (!neighborhood) {
+      throw new Error(`Neighborhood ${action.neighborhoodId} not found`);
+    }
+
+    if (action.layer === 'store') {
+      // Reveal orders for stores in this neighborhood
+      neighborhood.storeIds.forEach(storeId => {
+        const store = gameState.entities[storeId];
+        if (store) {
+          ordersToReveal.push(...store.incomingOrderIds, ...store.outgoingOrderIds);
+        }
+      });
+      revealPercentage = 0.5; // 50%
+      durationMs = 45 * 60 * 1000; // 45 minutes
+    } else {
+      // Reveal orders for households in this neighborhood
+      neighborhood.householdIds.forEach(householdId => {
+        const household = gameState.entities[householdId];
+        if (household) {
+          ordersToReveal.push(...household.incomingOrderIds, ...household.outgoingOrderIds);
+        }
+      });
+      revealPercentage = 0.3; // 30%
+      durationMs = 60 * 60 * 1000; // 60 minutes
+    }
+  } else {
+    throw new Error('Invalid layer for reveal_orders action');
   }
 
-  // Determine reveal parameters based on entity type
-  let revealPercentage = 0.5;
-  let revealDurationMs = 45 * 60 * 1000; // 45 minutes
+  const numToReveal = Math.floor(ordersToReveal.length * revealPercentage);
+  const shuffled = [...ordersToReveal].sort(() => Math.random() - 0.5);
+  const selected = shuffled.slice(0, numToReveal);
 
-  switch (entity.type) {
-    case 'warehouse':
-      revealPercentage = 0.7;
-      revealDurationMs = 30 * 60 * 1000; // 30 minutes
-      break;
-    case 'store':
-      revealPercentage = 0.5;
-      revealDurationMs = 45 * 60 * 1000; // 45 minutes
-      break;
-    case 'household':
-      revealPercentage = 0.3;
-      revealDurationMs = 60 * 60 * 1000; // 60 minutes
-      break;
-  }
-
-  // Get all orders for this entity
-  const allOrderIds = [...entity.incomingOrderIds, ...entity.outgoingOrderIds];
-  
-  // Randomly reveal orders based on percentage
-  const ordersToReveal = Math.floor(allOrderIds.length * revealPercentage);
-  const shuffled = [...allOrderIds].sort(() => Math.random() - 0.5);
-  const selectedOrderIds = shuffled.slice(0, ordersToReveal);
-
-  const revealUntil = Date.now() + revealDurationMs;
-
-  for (const orderId of selectedOrderIds) {
+  const now = Date.now();
+  selected.forEach(orderId => {
     const order = gameState.orders[orderId];
     if (order) {
       order.isRevealed = true;
-      order.revealedUntil = revealUntil;
+      order.revealedUntil = now + durationMs;
+      order.revealSource = action.layer;
     }
-  }
+  });
 
   return { ...gameState };
 }

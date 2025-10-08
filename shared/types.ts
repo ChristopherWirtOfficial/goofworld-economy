@@ -10,6 +10,7 @@ export interface Order {
   toEntityId: string;
   isRevealed: boolean;
   revealedUntil?: number; // timestamp
+  revealSource?: 'warehouse' | 'store' | 'household'; // which layer revealed this
 }
 
 export interface Entity {
@@ -46,6 +47,8 @@ export interface PlayerAction {
   orderId?: string;
   targetEntityId?: string;
   revealEntityId?: string;
+  layer?: 'warehouse' | 'store' | 'household'; // for reveal_orders
+  neighborhoodId?: string; // for neighborhood-level reveals
 }
 
 export interface PlayerCooldown {

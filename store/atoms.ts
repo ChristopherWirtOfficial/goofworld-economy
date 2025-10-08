@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
-import { GameState } from '@/shared/types';
+import { GameState, Order, Entity } from '@/shared/types';
 
 // Player ID persisted to localStorage
 export const playerIdAtom = atomWithStorage<string>(
@@ -25,4 +25,69 @@ export const cooldownRemainingAtom = atom((get) => {
   const now = Date.now();
   return Math.max(0, Math.ceil((nextActionTime - now) / 1000));
 });
+
+// Derived atoms for revealed orders and key information
+export const revealedOrdersAtom = atom((get) => {
+  const gameState = get(gameStateAtom);
+  if (!gameState) return [];
+  
+  return Object.values(gameState.orders).filter(order => order.isRevealed);
+});
+
+export const ordersByEntityAtom = atom((get) => {
+  const gameState = get(gameStateAtom);
+  if (!gameState) return {};
+  
+  const ordersByEntity: Record<string, { incoming: Order[]; outgoing: Order[] }> = {};
+  
+  Object.values(gameState.entities).forEach(entity => {
+    ordersByEntity[entity.id] = {
+      incoming: entity.incomingOrderIds
+        .map(id => gameState.orders[id])
+        .filter(Boolean)
+        .filter(order => order.isRevealed),
+      outgoing: entity.outgoingOrderIds
+        .map(id => gameState.orders[id])
+        .filter(Boolean)
+        .filter(order => order.isRevealed),
+    };
+  });
+  
+  return ordersByEntity;
+});
+
+export const entityDetailsAtom = atom((get) => {
+  const gameState = get(gameStateAtom);
+  if (!gameState) return {};
+  
+  const entityDetails: Record<string, {
+    entity: Entity;
+    revealedIncoming: Order[];
+    revealedOutgoing: Order[];
+    totalIncoming: number;
+    totalOutgoing: number;
+    revealedIncomingCount: number;
+    revealedOutgoingCount: number;
+  }> = {};
+  
+  Object.values(gameState.entities).forEach(entity => {
+    const incomingOrders = entity.incomingOrderIds.map(id => gameState.orders[id]).filter(Boolean);
+    const outgoingOrders = entity.outgoingOrderIds.map(id => gameState.orders[id]).filter(Boolean);
+    
+    entityDetails[entity.id] = {
+      entity,
+      revealedIncoming: incomingOrders.filter(order => order.isRevealed),
+      revealedOutgoing: outgoingOrders.filter(order => order.isRevealed),
+      totalIncoming: incomingOrders.length,
+      totalOutgoing: outgoingOrders.length,
+      revealedIncomingCount: incomingOrders.filter(order => order.isRevealed).length,
+      revealedOutgoingCount: outgoingOrders.filter(order => order.isRevealed).length,
+    };
+  });
+  
+  return entityDetails;
+});
+
+// TODO: Add turn cooldown system (currently disabled for development)
+export const isActionAllowedAtom = atom(true);
 

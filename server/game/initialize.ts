@@ -195,15 +195,29 @@ export function initializeGameState(): GameState {
   const now = Date.now();
   const twoMonthsMs = 60 * 24 * 60 * 60 * 1000; // 60 days
 
-  // Create temporary neighborhoods for compatibility (will implement properly later)
+  // Create neighborhoods and assign entities to them
+  const storesPerNeighborhood = 5;
+  const householdsPerNeighborhood = 50;
+  
   for (let n = 0; n < 4; n++) {
     const neighborhoodId = `neighborhood-${n}`;
+    const neighborhoodStores = stores.slice(n * storesPerNeighborhood, (n + 1) * storesPerNeighborhood);
+    const neighborhoodHouseholds = households.slice(n * householdsPerNeighborhood, (n + 1) * householdsPerNeighborhood);
+    
     neighborhoods[neighborhoodId] = {
       id: neighborhoodId,
       name: NEIGHBORHOOD_NAMES[n],
-      storeIds: stores.slice(n * 5, (n + 1) * 5).map(s => s.id),
-      householdIds: households.slice(n * 50, (n + 1) * 50).map(h => h.id),
+      storeIds: neighborhoodStores.map(s => s.id),
+      householdIds: neighborhoodHouseholds.map(h => h.id),
     };
+    
+    // Assign neighborhood IDs to stores and households
+    for (const store of neighborhoodStores) {
+      store.neighborhoodId = neighborhoodId;
+    }
+    for (const household of neighborhoodHouseholds) {
+      household.neighborhoodId = neighborhoodId;
+    }
   }
 
   return {

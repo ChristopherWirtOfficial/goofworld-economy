@@ -74,7 +74,9 @@ function createMockGameState(): GameState {
         quantity: Math.floor(Math.random() * 5000) + 1000,
         fromEntityId: warehouseId,
         toEntityId: storeId,
-        isRevealed: false,
+        isRevealed: Math.random() < 0.2, // 20% chance to be revealed
+        revealedUntil: Math.random() < 0.2 ? Date.now() + Math.random() * 60 * 60 * 1000 : undefined,
+        revealSource: Math.random() < 0.2 ? 'warehouse' : undefined,
       };
       orders[order.id] = order;
       entities[warehouseId].outgoingOrderIds.push(order.id);
@@ -109,7 +111,9 @@ function createMockGameState(): GameState {
         quantity: Math.floor(Math.random() * 50) + 10,
         fromEntityId: storeId,
         toEntityId: householdId,
-        isRevealed: false,
+        isRevealed: Math.random() < 0.1, // 10% chance to be revealed
+        revealedUntil: Math.random() < 0.1 ? Date.now() + Math.random() * 60 * 60 * 1000 : undefined,
+        revealSource: Math.random() < 0.1 ? 'store' : undefined,
       };
       orders[order.id] = order;
       entities[storeId].outgoingOrderIds.push(order.id);

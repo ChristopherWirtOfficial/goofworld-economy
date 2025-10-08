@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
 import { getSocket } from '@/lib/socket';
 import { gameStateAtom, nextActionTimeAtom, playerIdAtom } from '@/store/atoms';
-import { mockGameState } from '@/lib/mockGameState';
 import { GameState } from '@/shared/types';
 
 export function useSocket() {
@@ -11,9 +10,6 @@ export function useSocket() {
   const [playerId] = useAtom(playerIdAtom);
 
   useEffect(() => {
-    // Initialize with mock data for UI development
-    setGameState(mockGameState);
-
     const socket = getSocket();
 
     socket.on('connect', () => {
