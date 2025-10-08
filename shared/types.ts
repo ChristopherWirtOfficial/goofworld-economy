@@ -20,11 +20,20 @@ export interface Entity {
   capacity: number;
   incomingOrderIds: string[];
   outgoingOrderIds: string[];
+  neighborhoodId?: string; // stores and households belong to neighborhoods
+}
+
+export interface Neighborhood {
+  id: string;
+  name: string;
+  storeIds: string[];
+  householdIds: string[];
 }
 
 export interface GameState {
   entities: Record<string, Entity>;
   orders: Record<string, Order>;
+  neighborhoods: Record<string, Neighborhood>;
   startTime: number;
   endTime: number;
   tickInterval: number; // ms between simulation ticks

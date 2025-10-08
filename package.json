@@ -12,28 +12,37 @@
     "start:next": "next start",
     "start:server": "tsx server/index.ts",
     "lint": "next lint",
+    "check": "yarn tsc --noEmit && yarn tsc -p tsconfig.server.json --noEmit",
+    "clint": "yarn lint && yarn check",
     "verify-ci": "bash scripts/verify-ci.sh"
   },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "next": "^14.2.0",
-    "socket.io": "^4.7.5",
-    "socket.io-client": "^4.7.5",
+    "@chakra-ui/next-js": "^2.4.2",
+    "@chakra-ui/react": "^3.27.1",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@tanstack/react-query": "^5.90.2",
+    "@tanstack/react-query-devtools": "^5.90.2",
+    "cors": "^2.8.5",
     "express": "^4.19.2",
-    "zustand": "^4.5.2",
-    "cors": "^2.8.5"
+    "framer-motion": "^12.23.22",
+    "jotai": "^2.15.0",
+    "next": "^15.1.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "@types/express": "^4.17.21",
     "@types/cors": "^2.8.17",
-    "typescript": "^5",
-    "tsx": "^4.7.1",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "concurrently": "^8.2.2",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.0"
+    "eslint": "^9",
+    "eslint-config-next": "^15.1.6",
+    "tsx": "^4.19.2",
+    "typescript": "^5"
   }
 }

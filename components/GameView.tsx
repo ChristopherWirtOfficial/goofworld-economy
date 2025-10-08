@@ -1,15 +1,19 @@
-import { useGameStore } from '@/store/gameStore';
-import styles from './GameView.module.css';
+import { useAtomValue } from 'jotai';
+import { Box, Heading, Text, VStack, SimpleGrid, Spinner, Center } from '@chakra-ui/react';
+import { gameStateAtom } from '@/store/atoms';
+import { TownVisualization } from './TownVisualization';
 
 export default function GameView() {
-  const { gameState } = useGameStore();
+  const gameState = useAtomValue(gameStateAtom);
 
   if (!gameState) {
     return (
-      <div className={styles.loading}>
-        <div className={styles.spinner}></div>
-        <p>Connecting to Goof World...</p>
-      </div>
+      <Center minH="60vh" flexDir="column" gap={4}>
+        <Spinner size="xl" color="blue.500" thickness="4px" />
+        <Text fontSize="lg" color="gray.500">
+          Connecting to Goof World...
+        </Text>
+      </Center>
     );
   }
 
@@ -22,40 +26,75 @@ export default function GameView() {
   const revealedOrders = Object.values(gameState.orders).filter(o => o.isRevealed).length;
 
   return (
-    <div className={styles.container}>
-      <div className={styles.overview}>
-        <h2>System Overview</h2>
-        <div className={styles.metrics}>
-          <div className={styles.metric}>
-            <span className={styles.metricValue}>{warehouses.length}</span>
-            <span className={styles.metricLabel}>Warehouses</span>
-          </div>
-          <div className={styles.metric}>
-            <span className={styles.metricValue}>{stores.length}</span>
-            <span className={styles.metricLabel}>Stores</span>
-          </div>
-          <div className={styles.metric}>
-            <span className={styles.metricValue}>{households.length}</span>
-            <span className={styles.metricLabel}>Households</span>
-          </div>
-          <div className={styles.metric}>
-            <span className={styles.metricValue}>{totalOrders}</span>
-            <span className={styles.metricLabel}>Total Orders</span>
-          </div>
-          <div className={styles.metric}>
-            <span className={styles.metricValue} style={{ color: '#51cf66' }}>{revealedOrders}</span>
-            <span className={styles.metricLabel}>Revealed Orders</span>
-          </div>
-        </div>
-      </div>
+    <Box maxW="1400px" mx="auto" p={8}>
+      <VStack align="stretch" gap={8}>
+        <Box 
+          bg="#1a1d29" 
+          p={6} 
+          borderRadius="lg" 
+          border="1px solid"
+          borderColor="whiteAlpha.100"
+        >
+          <Heading size="lg" mb={4} color="white">
+            System Overview
+          </Heading>
+          <SimpleGrid columns={{ base: 2, md: 5 }} gap={6}>
+            <VStack>
+              <Text fontSize="3xl" fontWeight="bold" color="cyan.400">
+                {warehouses.length}
+              </Text>
+              <Text fontSize="sm" color="gray.500" fontWeight="medium">
+                Warehouses
+              </Text>
+            </VStack>
+            <VStack>
+              <Text fontSize="3xl" fontWeight="bold" color="purple.400">
+                {stores.length}
+              </Text>
+              <Text fontSize="sm" color="gray.500" fontWeight="medium">
+                Stores
+              </Text>
+            </VStack>
+            <VStack>
+              <Text fontSize="3xl" fontWeight="bold" color="orange.400">
+                {households.length}
+              </Text>
+              <Text fontSize="sm" color="gray.500" fontWeight="medium">
+                Households
+              </Text>
+            </VStack>
+            <VStack>
+              <Text fontSize="3xl" fontWeight="bold" color="gray.400">
+                {totalOrders}
+              </Text>
+              <Text fontSize="sm" color="gray.500" fontWeight="medium">
+                Total Orders
+              </Text>
+            </VStack>
+            <VStack>
+              <Text fontSize="3xl" fontWeight="bold" color="green.400">
+                {revealedOrders}
+              </Text>
+              <Text fontSize="sm" color="gray.500" fontWeight="medium">
+                Revealed Orders
+              </Text>
+            </VStack>
+          </SimpleGrid>
+        </Box>
 
-      <div className={styles.visualization}>
-        <p className={styles.placeholder}>
-          Visualization coming soon...
-          <br />
-          <small>This is where the interactive town view will go</small>
-        </p>
-      </div>
-    </div>
+        <Box 
+          bg="#1a1d29" 
+          p={6} 
+          borderRadius="lg" 
+          border="1px solid"
+          borderColor="whiteAlpha.100"
+        >
+          <Heading size="md" mb={4} color="white">
+            Supply Chain Network
+          </Heading>
+          <TownVisualization />
+        </Box>
+      </VStack>
+    </Box>
   );
 }

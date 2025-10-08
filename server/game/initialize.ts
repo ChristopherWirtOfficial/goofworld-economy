@@ -1,10 +1,12 @@
-import { GameState, Entity, Order, EntityType } from '../../shared/types';
+import { GameState, Entity, Order, EntityType, Neighborhood } from '../../shared/types';
 
 const ITEMS = ['potatoes', 'weed', 'bread', 'rice', 'eggs', 'milk', 'apples', 'chicken'];
+const NEIGHBORHOOD_NAMES = ['Downtown', 'Westside', 'Northbrook', 'Riverside'];
 
 export function initializeGameState(): GameState {
   const entities: Record<string, Entity> = {};
   const orders: Record<string, Order> = {};
+  const neighborhoods: Record<string, Neighborhood> = {};
 
   // Create backplane (import layer)
   const backplane: Entity = {
@@ -193,9 +195,21 @@ export function initializeGameState(): GameState {
   const now = Date.now();
   const twoMonthsMs = 60 * 24 * 60 * 60 * 1000; // 60 days
 
+  // Create temporary neighborhoods for compatibility (will implement properly later)
+  for (let n = 0; n < 4; n++) {
+    const neighborhoodId = `neighborhood-${n}`;
+    neighborhoods[neighborhoodId] = {
+      id: neighborhoodId,
+      name: NEIGHBORHOOD_NAMES[n],
+      storeIds: stores.slice(n * 5, (n + 1) * 5).map(s => s.id),
+      householdIds: households.slice(n * 50, (n + 1) * 50).map(h => h.id),
+    };
+  }
+
   return {
     entities,
     orders,
+    neighborhoods,
     startTime: now,
     endTime: now + twoMonthsMs,
     tickInterval: 5 * 60 * 1000, // 5 minutes

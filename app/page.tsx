@@ -1,21 +1,19 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useGameStore } from '@/store/gameStore';
+import { Box, Flex } from '@chakra-ui/react';
+import { useSocket } from '@/hooks/useSocket';
 import GameView from '@/components/GameView';
 import Header from '@/components/Header';
 
 export default function Home() {
-  const { connect } = useGameStore();
-
-  useEffect(() => {
-    connect();
-  }, [connect]);
+  useSocket();
 
   return (
-    <main style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <Flex minH="100vh" direction="column" bg="#0f1117">
       <Header />
-      <GameView />
-    </main>
+      <Box flex="1">
+        <GameView />
+      </Box>
+    </Flex>
   );
 }
