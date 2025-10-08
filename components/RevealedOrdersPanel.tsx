@@ -1,5 +1,6 @@
 import { useAtomValue } from 'jotai';
-import { Box, Text, VStack, HStack, Badge, Button, Divider } from '@chakra-ui/react';
+import { Box, Text, VStack, HStack, Badge, Button } from '@chakra-ui/react';
+import { Separator } from '@chakra-ui/react';
 import { useState } from 'react';
 import { revealedOrdersAtom, entityDetailsAtom } from '@/store/atoms';
 import { useGameState } from '@/hooks/useGameState';

@@ -12,9 +12,19 @@
     "start:next": "next start",
     "start:server": "tsx server/index.ts",
     "lint": "next lint",
-    "check": "yarn tsc --noEmit && yarn tsc -p tsconfig.server.json --noEmit",
-    "clint": "yarn lint && yarn check",
-    "verify-ci": "bash scripts/verify-ci.sh"
+    "check:app": "npx tsc --noEmit",
+    "check:server": "npx tsc -p tsconfig.server.json --noEmit",
+    "clint": "yarn lint && yarn check:app && yarn check:server",
+    "verify-ci": "bash scripts/verify-ci.sh",
+    "test": "node scripts/test-backend-logic.js all",
+    "test:api": "node scripts/test-game.js all",
+    "test:socket": "node scripts/test-socket.js all",
+    "test:logic": "node scripts/test-backend-logic.js all",
+    "test:integration": "node scripts/test-backend-integration.js all",
+    "test:reveal": "node scripts/test-backend-logic.js reveal",
+    "test:move": "node scripts/test-backend-logic.js move",
+    "test:validation": "node scripts/test-backend-logic.js validation",
+    "test:simulation": "node scripts/test-backend-logic.js simulation"
   },
   "dependencies": {
     "@chakra-ui/next-js": "^2.4.2",

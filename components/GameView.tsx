@@ -10,7 +10,7 @@ export default function GameView() {
   if (!gameState) {
     return (
       <Center minH="60vh" flexDir="column" gap={4}>
-        <Spinner size="xl" color="blue.500" thickness="4px" />
+        <Spinner size="xl" color="blue.500" />
         <Text fontSize="lg" color="gray.500">
           Connecting to Goof World...
         </Text>
